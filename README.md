@@ -40,7 +40,7 @@ npx wrangler d1 execute nav-db --file=./d1-setup.sql --remote
 
 | 变量名 | 说明 | 示例 |
 |--------|------|------|
-| ADMIN_PASSWORD | 管理后台密码 | panel965686 |
+| ADMIN_PASSWORD | 管理后台密码 | your-password-here |
 | PLAYLIST_IDS | 网易云歌单 JSON | `[{"server":"netease","id":"2250011882"}]` |
 
 ```bash
@@ -85,6 +85,26 @@ npx wrangler deploy
 - 主题设置
 
 ## 自定义
+
+### 修改背景图
+
+**方式一：替换本地文件**
+
+将你的背景图片放入 `public/` 目录，然后修改 `d1-setup.sql`：
+
+```sql
+INSERT OR REPLACE INTO settings (key, value) VALUES ('backgroundUrl', '/你的图片文件名.jpg');
+```
+
+然后重新初始化数据库：
+```bash
+npx wrangler d1 execute nav-db --command="DELETE FROM settings WHERE key='backgroundUrl'" --remote
+npx wrangler d1 execute nav-db --file=./d1-setup.sql --remote
+```
+
+**方式二：使用外部 URL**
+
+登录管理后台后，在设置中直接输入图片链接即可。
 
 ### 修改网站标题和图标
 
