@@ -16,20 +16,32 @@ async function handleApiRequest(request, env) {
   }
 
   const resource = pathParts[1];
+
+  // Auth endpoint
+  if (resource === 'auth' && request.method === 'POST') {
+    const { password } = await request.json();
+    const correctPassword = env.ADMIN_PASSWORD;
+    if (password === correctPassword) {
+      return jsonResponse({ success: true });
+    }
+    return jsonResponse({ error: 'Invalid password' }, 401);
+  }
+
   const id = pathParts[2];
 
   try {
     switch (resource) {
       case 'settings':
         if (request.method === 'GET') {
-          const stmt = env.DB.prepare('SELECT * FROM settings WHERE key = ?').bind('backgroundUrl');
+          const key = pathParts[2] || 'backgroundUrl';
+          const stmt = env.DB.prepare('SELECT * FROM settings WHERE key = ?').bind(key);
           const { results } = await stmt.all();
-          return jsonResponse(results[0] || { key: 'backgroundUrl', value: '' });
+          return jsonResponse(results[0] || { key: key, value: '' });
         }
         if (request.method === 'POST') {
-          const { backgroundUrl } = await request.json();
+          const { key, value } = await request.json();
           const stmt = env.DB.prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')
-            .bind('backgroundUrl', backgroundUrl);
+            .bind(key, typeof value === 'object' ? JSON.stringify(value) : value);
           await stmt.run();
           return jsonResponse({ success: true });
         }

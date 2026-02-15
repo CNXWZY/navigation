@@ -848,6 +848,15 @@
                     </div>
                 </div>
                 <div class="bg-gray-900 p-6 rounded-lg mb-6">
+                    <h3 class="text-xl font-semibold mb-4">音乐歌单配置</h3>
+                    <p class="text-sm text-gray-400 mb-4">配置音乐播放器的歌单</p>
+                    <div id="playlist-config-list" class="space-y-3 mb-4"></div>
+                    <div class="flex gap-2">
+                        <button id="add-playlist-btn" class="bg-blue-600 hover:bg-blue-700 rounded-md py-2 px-4 font-semibold text-sm">添加歌单</button>
+                        <button id="save-playlist-btn" class="bg-green-600 hover:bg-green-700 rounded-md py-2 px-4 font-semibold text-sm">保存歌单</button>
+                    </div>
+                </div>
+                <div class="bg-gray-900 p-6 rounded-lg mb-6">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-xl font-semibold" data-i18n-key="categoryManagement">分类管理</h3>
                         <button id="save-order-btn" class="bg-purple-600 hover:bg-purple-700 rounded-md py-1 px-3 text-sm font-semibold hidden" data-i18n-key="saveOrder">保存顺序</button>
@@ -966,7 +975,7 @@
         };
 
         // --- Global State and Configuration ---
-        const ADMIN_PASSWORD = self.ADMIN_PASSWORD || "panel965686";
+        const ADMIN_PASSWORD = null;
         const PLAYLISTS = JSON.parse(self.PLAYLIST_IDS || '[{"server":"netease","id":"2250011882"}]');
 
         let state = {
@@ -1066,7 +1075,10 @@
             searchEngineToggle: document.getElementById('search-engine-toggle'),
             searchEngineMenu: document.getElementById('search-engine-menu'),
             currentEngineIcon: document.getElementById('current-engine-icon'),
-            currentEngineName: document.getElementById('current-engine-name')
+            currentEngineName: document.getElementById('current-engine-name'),
+            playlistConfigList: document.getElementById('playlist-config-list'),
+            addPlaylistBtn: document.getElementById('add-playlist-btn'),
+            savePlaylistBtn: document.getElementById('save-playlist-btn')
         };
 
         // --- Music Capsule Class (Final Version) ---
@@ -1091,8 +1103,9 @@
                 this.songTitle.textContent = translations[state.currentLanguage].loadingPlaylists || "Loading playlists...";
                 this.artistName.textContent = '...';
 
+                const playlists = window.PLAYLIST_IDS ? JSON.parse(window.PLAYLIST_IDS) : [{ server: 'netease', id: '2250011882' }];
                 const allSongs = [];
-                for (const list of PLAYLISTS) {
+                for (const list of playlists) {
                     const apiUrl = `https://api.i-meto.com/meting/api?server=${list.server}&type=playlist&id=${list.id}`;
                     try {
                         const response = await fetch(apiUrl);
@@ -1657,7 +1670,12 @@
         function renderAdminPanel() {
             if (!state.isLoggedIn) return;
 
-            DOMElements.categoriesList.innerHTML = '';
+            renderAdminPanelContent();
+            // 异步加载歌单配置，不阻塞管理面板渲染
+            loadPlaylistConfigForAdmin().catch(err => console.error('Failed to load playlist config:', err));
+        }
+        
+        function renderAdminPanelContent() {
             
             // 创建统一的分类列表
             const allCategoriesContainer = document.createElement('div');
@@ -1842,15 +1860,26 @@
             DOMElements.adminLoginBtn.onclick = () => DOMElements.adminModal.classList.add('active');
             DOMElements.adminLogoutBtn.onclick = () => { DOMElements.adminModal.classList.remove('active'); DOMElements.adminLoginView.style.display = 'block'; DOMElements.adminPanelView.style.display = 'none'; DOMElements.passwordInput.value = ''; state.isLoggedIn = false; resetSiteForm(); };
             DOMElements.adminModal.onclick = e => { if (e.target === DOMElements.adminModal) DOMElements.adminLogoutBtn.click(); };
-            DOMElements.loginForm.onsubmit = e => {
+            DOMElements.loginForm.onsubmit = async e => {
                 e.preventDefault();
-                if (DOMElements.passwordInput.value === ADMIN_PASSWORD) {
-                    state.isLoggedIn = true;
-                    DOMElements.loginError.textContent = '';
-                    DOMElements.adminLoginView.style.display = 'none';
-                    DOMElements.adminPanelView.style.display = 'flex';
-                    renderAdminPanel();
-                } else {
+                const password = DOMElements.passwordInput.value;
+                try {
+                    const res = await fetch('/api/auth', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ password })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        state.isLoggedIn = true;
+                        DOMElements.loginError.textContent = '';
+                        DOMElements.adminLoginView.style.display = 'none';
+                        DOMElements.adminPanelView.style.display = 'flex';
+                        renderAdminPanel();
+                    } else {
+                        DOMElements.loginError.textContent = translations[state.currentLanguage].passwordIncorrect;
+                    }
+                } catch (err) {
                     DOMElements.loginError.textContent = translations[state.currentLanguage].passwordIncorrect;
                 }
             };
@@ -1885,6 +1914,75 @@
                     customAlert('Failed to save settings.', false);
                 }
             };
+            
+            // 歌单配置
+            let playlistConfig = [{ server: 'netease', id: '2250011882' }];
+            
+            function renderPlaylistConfig() {
+                DOMElements.playlistConfigList.innerHTML = '';
+                playlistConfig.forEach((playlist, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'flex gap-2 items-center';
+                    div.innerHTML = `
+                        <select class="playlist-server bg-gray-700 border border-gray-600 rounded-md p-2 text-sm">
+                            <option value="netease" ${playlist.server === 'netease' ? 'selected' : ''}>网易云</option>
+                            <option value="tencent" ${playlist.server === 'tencent' ? 'selected' : ''}>QQ音乐</option>
+                            <option value="kugou" ${playlist.server === 'kugou' ? 'selected' : ''}>酷狗</option>
+                        </select>
+                        <input type="text" class="playlist-id flex-grow bg-gray-700 border border-gray-600 rounded-md p-2 text-sm" placeholder="歌单ID" value="${playlist.id || ''}">
+                        <button class="remove-playlist-btn text-red-500 hover:text-red-400 p-2">✕</button>
+                    `;
+                    div.querySelector('.remove-playlist-btn').onclick = () => {
+                        playlistConfig.splice(index, 1);
+                        renderPlaylistConfig();
+                    };
+                    DOMElements.playlistConfigList.appendChild(div);
+                });
+            }
+            
+            DOMElements.addPlaylistBtn.onclick = () => {
+                playlistConfig.push({ server: 'netease', id: '' });
+                renderPlaylistConfig();
+            };
+            
+            DOMElements.savePlaylistBtn.onclick = async () => {
+                const newConfig = [];
+                DOMElements.playlistConfigList.querySelectorAll('.flex.gap-2').forEach(row => {
+                    const server = row.querySelector('.playlist-server').value;
+                    const id = row.querySelector('.playlist-id').value.trim();
+                    if (id) newConfig.push({ server, id });
+                });
+                
+                if (newConfig.length === 0) {
+                    customAlert('请至少添加一个有效的歌单', false);
+                    return;
+                }
+                
+                try {
+                    await api.post('settings', { key: 'playlistConfig', value: JSON.stringify(newConfig) });
+                    window.PLAYLIST_IDS = JSON.stringify(newConfig);
+                    customAlert('saveSettings');
+                    if (window.MusicCapsuleInstance) {
+                        window.MusicCapsuleInstance.fetchPlaylists();
+                    }
+                } catch (err) {
+                    console.error('Failed to save playlist:', err);
+                    customAlert('Failed to save playlist.', false);
+                }
+            };
+            
+            async function loadPlaylistConfigForAdmin() {
+                try {
+                    const res = await api.get('settings/playlistConfig');
+                    if (res && res.value) {
+                        playlistConfig = JSON.parse(res.value);
+                    }
+                } catch (e) {
+                    playlistConfig = [{ server: 'netease', id: '2250011882' }];
+                }
+                renderPlaylistConfig();
+            }
+            
             DOMElements.addCategoryForm.onsubmit = async (e) => { e.preventDefault(); const name = DOMElements.categoryNameInput.value.trim(); const type = DOMElements.categoryTypeSelect.value; if (name) { await api.post('categories', { name, type }); DOMElements.categoryNameInput.value = ''; loadInitialData(); } };
 
             DOMElements.siteForm.onsubmit = async (e) => {
@@ -2209,13 +2307,14 @@
         // --- Application Initialization ---
         async function loadInitialData() {
             try {
-                const [settings, categories, sites, frequentSites, siteGroups, preferences] = await Promise.all([
+                const [settings, categories, sites, frequentSites, siteGroups, preferences, playlistConfig] = await Promise.all([
                     api.get('settings'),
                     api.get('categories'),
                     api.get('sites'),
                     api.get('sites/frequent').catch(() => []),
                     api.get('site-groups').catch(() => []),
-                    api.get('user-preferences').catch(() => ({}))
+                    api.get('user-preferences').catch(() => ({})),
+                    api.get('settings/playlistConfig').catch(() => null)
                 ]);
 
                 if (settings && settings.value) {
@@ -2228,6 +2327,14 @@
                 state.siteGroups = siteGroups || [];
                 state.userPreferences = preferences || {};
                 state.showFrequentSites = state.userPreferences.show_frequent_sites !== 'false';
+                
+                if (playlistConfig && playlistConfig.value) {
+                    try {
+                        window.PLAYLIST_IDS = playlistConfig.value;
+                    } catch (e) {
+                        console.error('Failed to parse playlist config:', e);
+                    }
+                }
             } catch (error) {
                 console.error("Failed to load initial data:", error);
                 const errorMsg = `${translations[state.currentLanguage].dataLoadFailed} (Status: ${error.status || 'N/A'})`;
@@ -2272,7 +2379,7 @@
             initSakuraEffect();
 
             // Initialize the music capsule
-            new MusicCapsule();
+            window.MusicCapsuleInstance = new MusicCapsule();
             
             // Load pinyin library for Chinese search support
             if (state.currentLanguage === 'zh') {
