@@ -1,0 +1,16 @@
+{
+    "name": "xwzy-nav",
+    "main": "src/worker.js",
+    "compatibility_date": "2025-06-04",
+    "assets": {
+      "directory": "./public",
+      "binding": "ASSETS"
+    },
+    "d1_databases": [
+      {
+        "binding": "DB",
+        "database_name": "nav-db",
+        "database_id": "6f745af7-b649-4f68-bb2b-713b8a1be85d"
+      }
+    ]
+  }
