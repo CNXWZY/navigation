@@ -30,11 +30,19 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        .hover-scale {
-            transition: transform 0.3s ease;
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .hover-scale:hover {
-            transform: scale(1.05);
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
     </style>
 </head>
@@ -42,45 +50,70 @@
     <div class="max-w-4xl mx-auto">
         <!-- Header -->
         <header class="flex justify-between items-center mb-8">
-            <a href="/" class="text-2xl font-bold gradient-text">🚀 行稳致远</a>
-            <div class="flex gap-4">
-                <a href="/about.html?lang=zh" class="text-gray-400 hover:text-white transition">中文</a>
+            <a href="/" class="text-2xl font-bold gradient-text hover:opacity-80 transition">🚀 行稳致远</a>
+            <div class="flex gap-4 items-center">
+                <a href="/about.html?lang=zh" class="text-gray-400 hover:text-white transition font-medium">中文</a>
                 <span class="text-gray-600">|</span>
-                <a href="/about.html?lang=en" class="text-gray-400 hover:text-white transition">English</a>
+                <a href="/about.html?lang=en" class="text-gray-400 hover:text-white transition font-medium">EN</a>
             </div>
         </header>
 
         <!-- Hero Section -->
-        <section class="glass rounded-2xl p-8 mb-8 text-center">
+        <section class="glass rounded-2xl p-8 mb-8 text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+            <div class="text-6xl mb-4 float-animation">🚀</div>
             <h1 class="text-4xl md:text-5xl font-bold mb-4">
                 <span class="gradient-text">关于本站</span>
             </h1>
             <p class="text-xl text-gray-300 max-w-2xl mx-auto">
                 基于 Cloudflare Workers + D1 构建的现代化导航网站
             </p>
+            <p class="text-gray-400 mt-4">零服务器成本，永久免费</p>
+        </section>
+
+        <!-- Why Choose -->
+        <section class="glass rounded-xl p-8 mb-8">
+            <h2 class="text-2xl font-bold mb-6 text-center">💡 为什么选择导航站？</h2>
+            <div class="grid md:grid-cols-3 gap-6 text-center">
+                <div class="p-4">
+                    <div class="text-3xl mb-3">⚡</div>
+                    <h3 class="font-bold mb-2">极速体验</h3>
+                    <p class="text-gray-400 text-sm">Cloudflare 全球 CDN 加速，毫秒级加载</p>
+                </div>
+                <div class="p-4">
+                    <div class="text-3xl mb-3">🎨</div>
+                    <h3 class="font-bold mb-2">完全自定义</h3>
+                    <p class="text-gray-400 text-sm">主题、背景、分类，想怎么改就怎么改</p>
+                </div>
+                <div class="p-4">
+                    <div class="text-3xl mb-3">💸</div>
+                    <h3 class="font-bold mb-2">零成本</h3>
+                    <p class="text-gray-400 text-sm">Cloudflare 免费额度，完全足够使用</p>
+                </div>
+            </div>
         </section>
 
         <!-- Features -->
         <section class="grid md:grid-cols-2 gap-6 mb-8">
-            <div class="glass rounded-xl p-6 hover-scale">
+            <div class="glass rounded-xl p-6 hover-lift cursor-default">
                 <div class="text-4xl mb-4">🌐</div>
                 <h3 class="text-xl font-bold mb-2">全球 CDN 加速</h3>
                 <p class="text-gray-400">基于 Cloudflare 全球网络，访问速度拉满，毫秒级加载</p>
             </div>
-            <div class="glass rounded-xl p-6 hover-scale">
+            <div class="glass rounded-xl p-6 hover-lift cursor-default">
                 <div class="text-4xl mb-4">🎵</div>
                 <h3 class="text-xl font-bold mb-2">音乐播放器</h3>
                 <p class="text-gray-400">支持网易云、QQ音乐、酷狗歌单，背景音乐听起来</p>
             </div>
-            <div class="glass rounded-xl p-6 hover-scale">
+            <div class="glass rounded-xl p-6 hover-lift cursor-default">
                 <div class="text-4xl mb-4">🔐</div>
                 <h3 class="text-xl font-bold mb-2">安全可靠</h3>
                 <p class="text-gray-400">密码存储在 Cloudflare Secret，安全无忧</p>
             </div>
-            <div class="glass rounded-xl p-6 hover-scale">
-                <div class="text-4xl mb-4">💰</div>
-                <h3 class="text-xl font-bold mb-2">完全免费</h3>
-                <p class="text-gray-400">零服务器成本，Cloudflare 免费额度足够使用</p>
+            <div class="glass rounded-xl p-6 hover-lift cursor-default">
+                <div class="text-4xl mb-4">📱</div>
+                <h3 class="text-xl font-bold mb-2">响应式设计</h3>
+                <p class="text-gray-400">完美适配手机、平板、电脑各种设备</p>
             </div>
         </section>
 
@@ -88,8 +121,14 @@
         <section class="glass rounded-xl p-8 mb-8">
             <h2 class="text-2xl font-bold mb-6 text-center">🛠️ 技术栈</h2>
             <div class="flex flex-wrap justify-center gap-4">
-                <span class="px-4 py-2 bg-orange-500/20 text-orange-400 rounded-full">Cloudflare Workers</span>
-                <span class="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-full">Cloudflare D1</span>
+                <span class="px-4 py-2 bg-orange-500/20 text-orange-400 rounded-full flex items-center gap-2">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm6.958 17.708h-4.375v-7.5h4.375v7.5zm-2.188-8.75a2.92 2.92 0 0 1-2.875 2.917 2.92 2.92 0 0 1-2.917-2.875 2.92 2.92 0 0 1 2.917-2.917 2.92 2.92 0 0 1 2.875 2.917z"/></svg>
+                    Workers
+                </span>
+                <span class="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-full flex items-center gap-2">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 4.8c1.324 0 2.4 1.076 2.4 2.4s-1.076 2.4-2.4 2.4-2.4-1.076-2.4-2.4 1.076-2.4 2.4-2.4z"/></svg>
+                    D1
+                </span>
                 <span class="px-4 py-2 bg-cyan-500/20 text-cyan-400 rounded-full">Tailwind CSS</span>
                 <span class="px-4 py-2 bg-yellow-500/20 text-yellow-400 rounded-full">JavaScript</span>
             </div>
@@ -101,32 +140,31 @@
             <div class="flex flex-wrap justify-center gap-4">
                 <a href="https://github.com/CNXWZY/navigation" target="_blank" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition flex items-center gap-2">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                    GitHub
+                    源码
                 </a>
                 <a href="https://workers.dev" target="_blank" class="px-6 py-3 bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 rounded-lg transition">
                     Cloudflare Workers
                 </a>
                 <a href="https://dash.cloudflare.com" target="_blank" class="px-6 py-3 bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 rounded-lg transition">
-                    Cloudflare Dashboard
+                    Cloudflare
                 </a>
             </div>
         </section>
 
-        <!-- Contact -->
-        <section class="glass rounded-xl p-8 mb-8">
-            <h2 class="text-2xl font-bold mb-6 text-center">📮 联系方式</h2>
-            <p class="text-center text-gray-400 mb-4">如有问题或建议，欢迎提交 Issue</p>
-            <div class="text-center">
-                <a href="mailto:cnxwzy@gmail.com" class="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition">
-                    联系站长
-                </a>
-            </div>
+        <!-- Feedback -->
+        <section class="glass rounded-xl p-8 mb-8 text-center">
+            <h2 class="text-2xl font-bold mb-4">💬 反馈建议</h2>
+            <p class="text-gray-400 mb-6">发现 bug？有新功能建议？来 GitHub 提 Issue 吧！</p>
+            <a href="https://github.com/CNXWZY/navigation/issues" target="_blank" class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg transition font-semibold">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                提交 Issue
+            </a>
         </section>
 
         <!-- Footer -->
         <footer class="text-center text-gray-500 py-8">
-            <p>© 2026 行稳致远导航站. 基于 Cloudflare 构建.</p>
-            <p class="mt-2">零服务器成本，永久免费</p>
+            <p>© 2026 行稳致远导航站</p>
+            <p class="mt-2 text-sm">基于 Cloudflare 构建 | 零服务器成本</p>
         </footer>
     </div>
 
