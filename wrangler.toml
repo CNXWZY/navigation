@@ -5,8 +5,11 @@ compatibility_date = "2024-01-01"
 [[d1_databases]]
 binding = "NAV_DB"
 database_name = "nav-db"
-database_id = "your-d1-database-id"
+database_id = "6f745af7-b649-4f68-bb2b-713b8a1be85d"
 
 [[kv_namespaces]]
 binding = "NAV_AUTH"
-id = "your-kv-namespace-id"
+id = "f51cf1dfffa44961870a6dc26d25816d"
+
+[env.production]
+name = "my-nav"
