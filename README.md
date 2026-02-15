@@ -2,7 +2,7 @@
 
 基于 Cloudflare Workers + D1 构建的现代化导航网站，零服务器成本，即开即用！
 
-[🌐 在线预览](https://xwzy.xx.kg) | [📖 原项目](https://github.com/gdydg/my-nav-site)
+[🌐 在线预览](https://xwzy.xx.kg) | [📖 原项目](https://github.com/gdydg/my-nav-site) | [🇺🇸 English](README.en.md)
 
 ---
 
