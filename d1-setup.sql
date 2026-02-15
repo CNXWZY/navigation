@@ -58,8 +58,7 @@ CREATE TABLE IF NOT EXISTS user_preferences (
 );
 
 -- 7. 插入默认设置
-INSERT OR IGNORE INTO settings (key, value) VALUES 
-  ('backgroundUrl', 'https://iili.io/FSa7FDB.gif');
+INSERT OR REPLACE INTO settings (key, value) VALUES ('backgroundUrl', '');
 
 -- 8. 插入默认用户偏好
 INSERT OR IGNORE INTO user_preferences (key, value) VALUES 
