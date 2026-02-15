@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://pub-012ffe73451d4d939016595b4756f77c.r2.dev/microfeed/production/images/channel-f631bfd9838a5646658af6e6a6c08b95.png">
-    <title>行稳致远导航站</title>
+    <title>行稳致远</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -12,7 +12,15 @@
     <style>
         /* Base font styles */
         html[lang="zh-CN"] body { font-family: 'Inter', 'Helvetica Neue', 'Hiragino Sans GB', 'WenQuanYi Micro Hei', 'Microsoft Yahei', sans-serif; }
-        body { font-family: 'Inter', sans-serif; transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out; }
+        html { 
+            min-height: 100vh; 
+            background: #111827 no-repeat center center fixed; 
+            -webkit-background-size: cover; 
+            -moz-background-size: cover; 
+            -o-background-size: cover; 
+            background-size: cover; 
+        }
+        body { margin: 0; font-family: 'Inter', sans-serif; }
 
         /* UI element styles */
         .backdrop-blur-md { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
@@ -706,7 +714,7 @@
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white">
+<body class="text-white">
     <canvas id="sakura-canvas"></canvas>
 
     <div id="app-container" class="flex h-screen">
@@ -1850,7 +1858,11 @@
             DOMElements.saveBackgroundBtn.onclick = async () => {
                 const url = DOMElements.backgroundUrlInput.value.trim();
                 if (url) {
-                    try { await api.post('settings', { backgroundUrl: url }); customAlert('backgroundSaved'); document.body.style.backgroundImage = `url('${url}')`; } catch (err) { customAlert('backgroundSaveFailed'); console.error(err); }
+                    try { 
+                        await api.post('settings', { backgroundUrl: url }); 
+                        customAlert('backgroundSaved'); 
+                        document.documentElement.style.backgroundImage = `url('${url}')`;
+                    } catch (err) { customAlert('backgroundSaveFailed'); console.error(err); }
                 }
             };
             
@@ -2207,10 +2219,7 @@
                 ]);
 
                 if (settings && settings.value) {
-                    DOMElements.body.style.backgroundImage = `url('${settings.value}')`;
-                    DOMElements.body.style.backgroundSize = '100% 100%';
-                    DOMElements.body.style.backgroundPosition = 'center';
-                    DOMElements.body.style.backgroundAttachment = 'fixed';
+                    document.documentElement.style.backgroundImage = `url('${settings.value}')`;
                     DOMElements.backgroundUrlInput.value = settings.value;
                 }
                 state.categories = categories || [];
