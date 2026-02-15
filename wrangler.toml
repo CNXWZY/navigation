@@ -1,0 +1,12 @@
+name = "xwzy-nav"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+[[d1_databases]]
+binding = "NAV_DB"
+database_name = "nav-db"
+database_id = "your-d1-database-id"
+
+[[kv_namespaces]]
+binding = "NAV_AUTH"
+id = "your-kv-namespace-id"
