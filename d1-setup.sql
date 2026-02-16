@@ -57,8 +57,8 @@ CREATE TABLE IF NOT EXISTS user_preferences (
   value TEXT NOT NULL
 );
 
--- 7. 插入默认设置（背景图指向 public/background.jpeg）
-INSERT OR REPLACE INTO settings (key, value) VALUES ('backgroundUrl', '/background.jpeg');
+-- 7. 插入默认设置（默认无背景图，可通过管理面板设置）
+INSERT OR REPLACE INTO settings (key, value) VALUES ('backgroundUrl', '');
 
 -- 8. 插入默认用户偏好
 INSERT OR IGNORE INTO user_preferences (key, value) VALUES 

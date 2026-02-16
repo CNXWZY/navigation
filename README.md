@@ -2,7 +2,7 @@
 
 基于 Cloudflare Workers + D1 构建的现代化导航网站，零服务器成本，即开即用！
 
-[🌐 在线预览](https://xwzy.xx.kg) | [📖 原项目](https://github.com/gdydg/my-nav-site) | [🇺🇸 English](README.en.md)
+[🌐 在线预览](https://xwzy.xx.kg) | [📖 English](README.en.md)
 
 ---
 
@@ -21,17 +21,56 @@
 | 🎨 个性化程度 | 低 | 高度自定义 |
 | 🎵 音乐播放器 | ❌ | ✅ 内置支持 |
 | 💰 成本 | 免费但受限 | **完全免费** |
-| 🔧 维护 | 浏览器厂商决定 |  完全掌控 |
+| 🔧 维护 | 浏览器厂商决定 | 完全掌控 |
 
 ### 🎉 特色功能
 
 - 🌐 **全球 CDN 加速** - 基于 Cloudflare 全球网络，访问速度拉满
+- 🔍 **多搜索引擎** - Google/Baidu/Bing/DuckDuckGo/Yandex 自由切换
 - 🎵 **音乐播放器** - 网易云/QQ音乐/酷狗歌单一键集成，背景音乐听起来
 - 🎨 **主题自由切换** - 暗黑/明亮模式，还有浪漫的落花特效 🌸
 - 📱 **完美移动端适配** - 手机、平板、电脑都能丝滑使用
 - 🔐 **安全登录** - 密码存储在 Cloudflare Secret，安全无忧
 - 🖼️ **一键换肤** - 背景图想换就换
 - 📊 **数据可视化** - 常用网站自动统计，智能推荐
+- ⌨️ **快捷键支持** - 1-9 快速打开常用网站
+- 🏷️ **智能搜索** - 支持拼音、标签快速检索
+- 📂 **网站分组** - 按分组管理网站，井井有条
+
+---
+
+## ⚡ 部署前准备
+
+### Cloudflare 变量配置
+
+本项目需要配置以下 Cloudflare 变量：
+
+| 变量名 | 类型 | 说明 | 配置方式 |
+|--------|------|------|----------|
+| `ADMIN_PASSWORD` | Secret | 管理面板登录密码 | `wrangler secret put ADMIN_PASSWORD` |
+| `DB` | D1 Database | SQLite 数据库 | 自动绑定 |
+| `ASSETS` | Assets | 静态文件托管 | 自动绑定 |
+
+**配置步骤：**
+
+```bash
+# 1. 登录 Cloudflare
+npx wrangler login
+
+# 2. 创建 D1 数据库
+npx wrangler d1 create nav-db
+# 注意：记录输出的 database_id
+
+# 3. 初始化数据库
+npx wrangler d1 execute nav-db --file=./d1-setup.sql --remote
+
+# 4. 设置管理密码（⚠️ 重要！）
+npx wrangler secret put ADMIN_PASSWORD
+# 输入你的管理密码
+
+# 5. 部署上线！
+npx wrangler deploy
+```
 
 ---
 
@@ -83,11 +122,13 @@ npx wrangler deploy
 **可视化操作：**
 - 📂 管理网站分类（侧边栏/顶部栏）
 - 🔗 添加/编辑/删除网站
+- 🏷️ 网站分组与标签管理
 - 🎵 **可视化配置音乐歌单**（支持网易云/QQ音乐/酷狗）
 - 🖼️ 自定义背景图
 - 🌗 切换主题
 - 📊 查看网站访问统计
 - 📥 导入/导出数据
+- ⚙️ 常用网站数量设置
 
 ---
 
@@ -100,11 +141,21 @@ npx wrangler deploy
 [
   {"server": "netease", "id": "2250011882"},  // 网易云
   {"server": "tencent", "id": "123456"},       // QQ音乐
-  {"server": "kugou", "id": "654321"}          // 酷狗
+  {"server": "kugou", "id": "654321"}         // 酷狗
 ]
 ```
 
 > 💡 现在可以直接在管理面板可视化配置，无需手动修改代码！
+
+---
+
+## ⌨️ 快捷键
+
+| 快捷键 | 功能 |
+|--------|------|
+| 1-9 | 快速打开常用网站 |
+| / | 聚焦搜索框 |
+| Esc | 关闭弹窗 |
 
 ---
 
@@ -156,6 +207,9 @@ cp your-image.jpg public/background.jpg
 | 歌单配置 | ❌ 需改代码 | ✅ 可视化管理 |
 | 音乐平台 | 仅网易云 | 网易云/QQ音乐/酷狗 |
 | 部署体验 | 一般 | 🚀 一键部署 |
+| 搜索引擎 | 仅Google | Google/Baidu/Bing/DuckDuckGo/Yandex |
+| 网站分组 | ❌ | ✅ 支持 |
+| 快捷键 | ❌ | ✅ 1-9快速打开 |
 
 ---
 

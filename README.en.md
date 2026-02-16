@@ -2,7 +2,7 @@
 
 A modern navigation website built on Cloudflare Workers + D1, with zero server costs and instant setup!
 
-[🌐 Live Demo](https://xwzy.xx.kg) | [📖 Original Project](https://github.com/gdydg/my-nav-site) | [🇨🇳 中文](README.md)
+[🌐 Live Demo](https://xwzy.xx.kg) | [📖 中文](README.md)
 
 ---
 
@@ -26,12 +26,51 @@ A modern navigation website built on Cloudflare Workers + D1, with zero server c
 ### 🎉 Cool Features
 
 - 🌐 **Global CDN** - Cloudflare-powered blazing fast access
+- 🔍 **Multiple Search Engines** - Google/Baidu/Bing/DuckDuckGo/Yandex
 - 🎵 **Music Player** - NetEase/QQ Music/KuGou integration
 - 🎨 **Theme Switching** - Dark/Light mode + falling petals 🌸
 - 📱 **Mobile First** - Works perfectly on phone/tablet/desktop
 - 🔐 **Secure Login** - Passwords stored in Cloudflare Secret
 - 🖼️ **Background Customization** - Change anytime
 - 📊 **Analytics** - Auto track frequently visited sites
+- ⌨️ **Keyboard Shortcuts** - 1-9 for quick access
+- 🏷️ **Smart Search** - Pinyin and tag search
+- 📂 **Site Groups** - Organize with groups and tags
+
+---
+
+## ⚡ Pre-deployment Setup
+
+### Cloudflare Variables Configuration
+
+This project requires the following Cloudflare variables:
+
+| Variable | Type | Description | How to Configure |
+|----------|------|-------------|------------------|
+| `ADMIN_PASSWORD` | Secret | Admin panel login password | `wrangler secret put ADMIN_PASSWORD` |
+| `DB` | D1 Database | SQLite database | Auto-bound |
+| `ASSETS` | Assets | Static file hosting | Auto-bound |
+
+**Setup Steps:**
+
+```bash
+# 1. Login to Cloudflare
+npx wrangler login
+
+# 2. Create D1 database
+npx wrangler d1 create nav-db
+# Note: Save the output database_id
+
+# 3. Initialize database
+npx wrangler d1 execute nav-db --file=./d1-setup.sql --remote
+
+# 4. Set admin password (⚠️ Important!)
+npx wrangler secret put ADMIN_PASSWORD
+# Enter your admin password
+
+# 5. Deploy!
+npx wrangler deploy
+```
 
 ---
 
@@ -83,11 +122,13 @@ Click the settings icon in top-right, enter password:
 **Visual Management:**
 - 📂 Manage categories (sidebar/topbar)
 - 🔗 Add/Edit/Delete sites
+- 🏷️ Site groups and tags management
 - 🎵 **Visual music playlist config** (NetEase/QQ/KuGou)
 - 🖼️ Custom background
 - 🌗 Theme switching
 - 📊 Visit statistics
 - 📥 Import/Export data
+- ⚙️ Frequently visited sites count settings
 
 ---
 
@@ -105,6 +146,16 @@ Multi-platform support:
 ```
 
 > 💡 Now with visual config in admin panel - no code editing needed!
+
+---
+
+## ⌨️ Keyboard Shortcuts
+
+| Shortcut | Function |
+|----------|----------|
+| 1-9 | Quick open frequently visited sites |
+| / | Focus search box |
+| Esc | Close modal |
 
 ---
 
@@ -156,6 +207,9 @@ Edit `public/index.html`:
 | Playlist Config | ❌ Code editing | ✅ Visual management |
 | Music Platforms | NetEase only | NetEase/QQ/KuGou |
 | Deploy Experience | Basic | 🚀 One-click |
+| Search Engines | Google only | Google/Baidu/Bing/DuckDuckGo/Yandex |
+| Site Groups | ❌ | ✅ Support |
+| Keyboard Shortcuts | ❌ | ✅ 1-9 quick access |
 
 ---
 
